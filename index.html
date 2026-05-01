@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Justificación de Inasistencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="card">
+
+  <div class="header">
+    <div class="header-icon">📋</div>
+    <h1>Justificación<br>de Inasistencia</h1>
+    <p>Adjunta tu soporte — JPG, PNG o PDF · máx. 10 MB</p>
+  </div>
+
+  <div class="body">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+    <!-- FORMULARIO -->
+    <form id="form" novalidate>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Nombre completo <span class="req">*</span></label>
+          <input type="text" name="nombre" id="nombre" placeholder="Ej: Juan Pérez" autocomplete="name"
+            onkeydown="const allowed=['Backspace','Delete','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End']; return /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ '\-]$/.test(event.key) || allowed.includes(event.key) || event.ctrlKey || event.metaKey"
+            oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ '\-]/g,'')">
+          <div class="field-error" id="err-nombre">⚠ Ingresa nombre y apellido (mínimo 3 letras)</div>
+        </div>
+        <div class="field">
+          <label>Número de ID <span class="req">*</span></label>
+          <input type="text" name="id_estudiante" id="id_estudiante" placeholder="Solo números" inputmode="numeric" maxlength="12"
+            onkeydown="return /[\d\b]|Arrow|Delete|Tab|Home|End/.test(event.key) || event.ctrlKey || event.metaKey"
+            oninput="this.value=this.value.replace(/\D/g,'')">
+          <div class="field-error" id="err-id">⚠ Solo dígitos, entre 6 y 12 caracteres</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Correo electrónico <span class="req">*</span></label>
+        <input type="email" name="correo" id="correo" placeholder="tu@correo.com" autocomplete="email">
+        <div class="field-error" id="err-correo">⚠ Correo inválido</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Fecha de inasistencia <span class="req">*</span></label>
+          <input type="date" name="fecha_inasistencia" id="fecha_inasistencia">
+          <div class="field-error" id="err-fecha">⚠ Fecha inválida o fuera de rango</div>
+        </div>
+        <div class="field">
+          <label>Motivo <span class="req">*</span></label>
+          <select name="motivo" id="motivo">
+            <option value="" disabled selected>Selecciona...</option>
+            <option value="salud">Salud</option>
+            <option value="familiar">Familiar</option>
+            <option value="accidente">Accidente</option>
+            <option value="tramite_oficial">Trámite oficial</option>
+            <option value="otro">Otro</option>
+          </select>
+          <div class="field-error" id="err-motivo">⚠ Selecciona un motivo</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Descripción <span class="req">*</span></label>
+        <textarea name="descripcion" id="descripcion" placeholder="Explica brevemente la situación... (mínimo 20 caracteres, máximo 1000)" maxlength="1000"></textarea>
+        <div class="field-error" id="err-desc">⚠ Mínimo 20 caracteres</div>
+        <div class="char-count" id="char-count">0 / 1000</div>
+      </div>
+
+      <!-- ALERTA DUPLICADO PREVENTIVO -->
+      <div class="alert-warn" id="alert-dup">
+        ⚠️ Ya enviaste una solicitud para esta fecha. Si continúas, será rechazada como duplicado.
+      </div>
+
+      <!-- ARCHIVO -->
+      <div class="field">
+        <label>Documento de soporte <span class="req">*</span></label>
+        <div class="file-zone" id="file-zone" onclick="document.getElementById('archivo').click()" ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
+          <input type="file" name="archivo_soporte" id="archivo" accept=".pdf,image/jpeg,image/png,image/jpg">
+          <button type="button" class="file-remove" id="file-remove" onclick="removeFile(event)" title="Eliminar archivo">✕</button>
+          <span class="file-icon" id="file-icon">📎</span>
+          <div class="file-name" id="file-name">Haz clic o arrastra tu archivo aquí</div>
+          <div class="file-meta" id="file-meta">PDF, JPG o PNG · máx. 10 MB</div>
+        </div>
+        <div class="field-error" id="err-archivo">⚠ Adjunta un documento de soporte</div>
+        <div class="field-error" id="err-archivo-tipo">⚠ Formato no permitido — usa PDF, JPG o PNG</div>
+        <div class="field-error" id="err-archivo-size">⚠ El archivo supera 10 MB</div>
+      </div>
+
+      <button type="button" class="btn-submit" id="btn-submit" onclick="enviar()">
+        <span>Enviar solicitud</span>
+        <span>→</span>
+      </button>
+    </form>
+
+    <!-- LOADING -->
+    <div id="screen-loading">
+      <div class="spinner"></div>
+      <p>Enviando tu solicitud...</p>
+      <div class="step-label" id="loading-step">Subiendo archivo</div>
+    </div>
+
+    <!-- ÉXITO -->
+    <div id="screen-success">
+      <div class="success-icon">✅</div>
+      <h2>¡Solicitud recibida!</h2>
+      <p>Tu justificación está siendo analizada por IA.</p>
+      <p>Guarda este ID para consultar el estado:</p>
+      <div class="id-badge" id="res-id">—</div>
+      <br>
+      <a id="tg-link" href="#" target="_blank" class="btn-tg">
+        <span>📲</span> Recibir resultado en Telegram
+      </a>
+      <p class="tg-hint">Abre el bot y presiona Start para vincularte y recibir la notificación automática.</p>
+    </div>
+
+    <!-- ERROR -->
+    <div id="screen-error">
+      <div class="error-icon">❌</div>
+      <h2>Algo salió mal</h2>
+      <div id="error-msg"></div>
+      <button class="btn-retry" onclick="reintentar()">↩ Corregir datos</button>
+    </div>
+
+  </div>
+</div>
+<script src="/js/script.js"></script>
+</body>
+</html>
