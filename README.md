@@ -150,7 +150,12 @@ Este sistema representa una solución moderna y eficiente para la gestión de in
 
 ## 👨‍💻 Autor
 
-tomas
+**Tomas Esteban Gonzalez Quintero** — *Desarrollador Full Stack*
+
+- 🌐 [Portafolio Web](https://portafolio-tegq.netlify.app/)
+- 🐙 [GitHub: @TEstebanGQ](https://github.com/TEstebanGQ)
+- 💼 [LinkedIn](https://www.linkedin.com/in/tomas-esteban-gonzalez-quintero/)
+- 📧 [Email](mailto:tomasestebangonzalezquintero@gmail.com)
 
 ---
 
