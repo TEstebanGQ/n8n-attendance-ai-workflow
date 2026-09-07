@@ -151,3 +151,12 @@ Este sistema representa una solución moderna y eficiente para la gestión de in
 ## 👨‍💻 Autor
 
 tomas
+
+---
+
+<div align="center">
+  <br/>
+  <img src="https://raw.githubusercontent.com/TEstebanGQ/TEstebanGQ/main/assets/logo-tegq.jpg" width="80" alt="TEGQ Brand Logo" />
+  <br/>
+  <sub><b>© Tomas Esteban González Quintero — TEGQ</b></sub>
+</div>
